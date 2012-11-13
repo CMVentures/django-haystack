@@ -115,7 +115,7 @@ class SimpleSearchQuery(BaseSearchQuery):
 
                 term_list.append(value.prepare(self))
 
-        return (' ').join(map(str, term_list))
+        return (' ').join(term_list)
 
 
 class SimpleEngine(BaseEngine):

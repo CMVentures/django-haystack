@@ -44,6 +44,7 @@ class SearchQuerySet(object):
 
         if self.query:
             hints['models'] = self.query.models
+            #print self.query
 
         backend_alias = connection_router.for_read(**hints)
 

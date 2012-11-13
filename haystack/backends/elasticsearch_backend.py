@@ -123,7 +123,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
             try:
                 # Make sure the index is there first.
                 self.conn.create_index(self.index_name, self.DEFAULT_SETTINGS)
-                self.conn.put_mapping('modelresult', current_mapping, index=self.index_name)
+                self.conn.put_mapping(self.index_name, 'modelresult', current_mapping)
                 self.existing_mapping = current_mapping
             except Exception:
                 if not self.silently_fail:
@@ -217,8 +217,8 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
                 query = {'query_string': {'query': " OR ".join(models_to_delete)}}
                 self.conn.delete_by_query(self.index_name, 'modelresult', query)
 
-            if commit:
-                self.conn.refresh(index=self.index_name)
+            #if commit:
+            #self.conn.refresh(index=self.index_name)
         except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
             if not self.silently_fail:
                 raise
@@ -477,7 +477,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
         start_offset = kwargs.get('start_offset', 0)
         if end_offset is not None and end_offset > start_offset:
             search_kwargs['size'] = end_offset - start_offset
-
+        #print search_kwargs
         try:
             raw_results = self.conn.search(search_kwargs,
                                            index=self.index_name,

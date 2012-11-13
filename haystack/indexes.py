@@ -179,7 +179,9 @@ class SearchIndex(threading.local):
 
         # `.select_related()` seems like a good idea here but can fail on
         # nullable `ForeignKey` as well as what seems like other cases.
-        return index_qs.filter(**extra_lookup_kwargs).order_by(model._meta.pk.name)
+        #.order_by(model._meta.pk.name)
+        return index_qs.filter(**extra_lookup_kwargs)
+        
 
     def prepare(self, obj):
         """
@@ -239,6 +241,7 @@ class SearchIndex(threading.local):
     def _get_backend(self, using):
         if using is None:
             using = connection_router.for_write(index=self)
+            #print 'use'
 
         return connections[using].get_backend()
 
