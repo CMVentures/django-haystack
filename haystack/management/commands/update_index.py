@@ -30,7 +30,10 @@ def worker(bits):
         if not 'sqlite3' in info['ENGINE']:
             try:
                 db.close_connection()
-                del(connections._connections[alias])
+                if isinstance(connections._connections, dict):
+                    del(connections._connections[alias])
+                else:
+                    delattr(connections._connections, alias)
             except KeyError:
                 pass
 
@@ -233,6 +236,7 @@ class Command(LabelCommand):
             if self.workers > 0:
                 pool = multiprocessing.Pool(self.workers)
                 pool.map(worker, ghetto_queue)
+                pool.terminate()
 
             if self.remove:
                 if self.start_date or self.end_date or total <= 0:
@@ -256,3 +260,4 @@ class Command(LabelCommand):
                 if self.workers > 0:
                     pool = multiprocessing.Pool(self.workers)
                     pool.map(worker, ghetto_queue)
+                    pool.terminate()
